@@ -1,4 +1,6 @@
-export const sales = [
+import type {Order} from '@/types';
+
+export const sales: Order[] = [
     { date: '2025-05-10', category: 'Electronics', orders: 15, revenue: 7500, month: 'May', year: '2025' },
     { date: '2025-05-11', category: 'Electronics', orders: 20, revenue: 11000, month: 'May', year: '2025' },
     { date: '2025-05-12', category: 'Electronics', orders: 15, revenue: 7500, month: 'May', year: '2025' },

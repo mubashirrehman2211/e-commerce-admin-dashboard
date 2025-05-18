@@ -1,16 +1,26 @@
 import { defineStore } from 'pinia'
 import { sales } from '../constants/Sales.ts'
 
+interface Order {
+    id: string
+    date: string
+    month: string
+    year: string
+    category: string
+    revenue: number
+    orders: number
+}
+
 export const useRevenueStore = defineStore('revenue', {
     state: () => ({
-        selectedCategory: 'All',
-        selectedPeriod: 'monthly',
+        selectedCategory: 'All' as string,
+        selectedPeriod: 'monthly' as 'daily' | 'monthly' | 'yearly',
     }),
 
     getters: {
-        filteredOrders(state) {
+        filteredOrders(state): Order[] {
             if (state.selectedCategory === 'All') return sales
-            return sales.filter(order => order.category === state.selectedCategory)
+            return sales.filter((order: Order) => order.category === state.selectedCategory)
         },
 
         totalRevenue(state): number {
@@ -23,12 +33,12 @@ export const useRevenueStore = defineStore('revenue', {
 
                 case 'monthly': {
                     const grouped = this.groupBy(orders, 'month', 'year')
-                    return Object.values(grouped).reduce((total, group) => total + this.sumRevenue(group), 0)
+                    return Object.values(grouped).reduce((total: number, group: Order[]) => total + this.sumRevenue(group), 0)
                 }
 
                 case 'yearly': {
                     const grouped = this.groupBy(orders, 'year')
-                    return Object.values(grouped).reduce((total, group) => total + this.sumRevenue(group), 0)
+                    return Object.values(grouped).reduce((total: number, group: Order[]) => total + this.sumRevenue(group), 0)
                 }
 
                 default:
@@ -42,12 +52,12 @@ export const useRevenueStore = defineStore('revenue', {
 
             switch (period) {
                 case 'daily':
-                    return orders.reduce((sum, item) => sum + item.orders, 0)
+                    return orders.reduce((sum: number, item: Order) => sum + item.orders, 0)
 
                 case 'monthly': {
                     const grouped = this.groupBy(orders, 'month', 'year')
                     return Object.values(grouped).reduce(
-                        (sum, group) => sum + group.reduce((s, o) => s + o.orders, 0),
+                        (sum: number, group: Order[]) => sum + group.reduce((s: number, o: Order) => s + o.orders, 0),
                         0
                     )
                 }
@@ -55,7 +65,7 @@ export const useRevenueStore = defineStore('revenue', {
                 case 'yearly': {
                     const grouped = this.groupBy(orders, 'year')
                     return Object.values(grouped).reduce(
-                        (sum, group) => sum + group.reduce((s, o) => s + o.orders, 0),
+                        (sum: number, group: Order[]) => sum + group.reduce((s: number, o: Order) => s + o.orders, 0),
                         0
                     )
                 }
@@ -65,22 +75,21 @@ export const useRevenueStore = defineStore('revenue', {
             }
         },
 
-        chartData(state) {
+        chartData(state): { labels: string[]; datasets: any[] } {
             const dataMap: Record<string, number> = {}
             let labels: string[] = []
 
             const orders = this.filteredOrders
 
             if (state.selectedPeriod === 'daily') {
-                orders.forEach(order => {
+                orders.forEach((order: Order) => {
                     const label = order.date
                     dataMap[label] = (dataMap[label] || 0) + order.revenue
                 })
                 labels = Object.keys(dataMap).sort((a, b) => new Date(a).getTime() - new Date(b).getTime())
             }
-
             else if (state.selectedPeriod === 'monthly') {
-                orders.forEach(order => {
+                orders.forEach((order: Order) => {
                     const label = `${order.month}-${order.year}`
                     dataMap[label] = (dataMap[label] || 0) + order.revenue
                 })
@@ -91,9 +100,8 @@ export const useRevenueStore = defineStore('revenue', {
                     return new Date(`${monthA} 1, ${yearA}`).getTime() - new Date(`${monthB} 1, ${yearB}`).getTime()
                 })
             }
-
             else if (state.selectedPeriod === 'yearly') {
-                orders.forEach(order => {
+                orders.forEach((order: Order) => {
                     const label = order.year
                     dataMap[label] = (dataMap[label] || 0) + order.revenue
                 })
@@ -118,12 +126,12 @@ export const useRevenueStore = defineStore('revenue', {
     },
 
     actions: {
-        sumRevenue(orders: Orders[]) {
-            return orders.reduce((sum, order) => sum + order.revenue, 0)
+        sumRevenue(orders: Order[]): number {
+            return orders.reduce((sum: number, order: Order) => sum + order.revenue, 0)
         },
 
-        groupBy(data, ...keys) {
-            return data.reduce((result, item) => {
+        groupBy<K extends keyof Order>(data: Order[], ...keys: K[]): Record<string, Order[]> {
+            return data.reduce((result: Record<string, Order[]>, item: Order) => {
                 const groupKey = keys.map(key => item[key]).join('-')
                 if (!result[groupKey]) result[groupKey] = []
                 result[groupKey].push(item)

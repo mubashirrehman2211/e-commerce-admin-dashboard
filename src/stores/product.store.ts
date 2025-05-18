@@ -1,10 +1,30 @@
 import {defineStore} from 'pinia'
+import type { RemovableRef } from '@vueuse/core';
 import {useStorage} from '@vueuse/core';
 import {createToast} from 'mosha-vue-toastify';
 import 'mosha-vue-toastify/dist/style.css'
+import type { Router } from 'vue-router';
+
+interface Product {
+    id: number
+    image: string
+    name: string
+    stock: number
+    price: number
+    created_at: string | Date
+    category: string
+}
+
+interface ProductState {
+    searchQuery: string
+    selectedCategory: string
+    sortOption: string
+    newItem: null | Product
+    products: RemovableRef<Product[]>
+}
 
 export const useProductStore = defineStore('product', {
-    state: () => ({
+    state: (): ProductState  => ({
         searchQuery: '',
         selectedCategory: 'All',
         sortOption: 'name',
@@ -130,7 +150,7 @@ export const useProductStore = defineStore('product', {
     }),
 
     getters: {
-        filteredProducts(state) {
+        filteredProducts(state): Product[] {
             let result = [...state.products]
 
             if (state.selectedCategory !== 'All') {
@@ -152,7 +172,7 @@ export const useProductStore = defineStore('product', {
             return result
         },
 
-        lowInventory(state) {
+        lowInventory(state):  Product[] {
             return state.products.filter(product => product.stock <= 5)
         },
 
@@ -162,7 +182,7 @@ export const useProductStore = defineStore('product', {
     },
 
     actions: {
-        updateStock(id: string, type: 'increase' | 'decrease') {
+        updateStock(id: number, type: 'increase' | 'decrease'): void {
             const product = this.products.find(p => p.id === id);
             if (product) {
                 switch (type) {
@@ -185,7 +205,7 @@ export const useProductStore = defineStore('product', {
 
             this.products.push(newProduct)
 
-            router.push('/products')
+             router.push('/products')
 
             createToast('Product added', {
                 type: 'success',
