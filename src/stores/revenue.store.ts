@@ -24,21 +24,33 @@ export const useRevenueStore = defineStore('revenue', {
         },
 
         totalRevenue(state): number {
-            const orders = this.filteredOrders
+            const store = this as unknown as {
+                filteredOrders: Order[]
+                sumRevenue: (orders: Order[]) => number
+                groupBy: (...args: any[]) => Record<string, Order[]>
+            }
+
+            const orders = store.filteredOrders
             const period = state.selectedPeriod
 
             switch (period) {
                 case 'daily':
-                    return this.sumRevenue(orders)
+                    return store.sumRevenue(orders)
 
                 case 'monthly': {
-                    const grouped = this.groupBy(orders, 'month', 'year')
-                    return Object.values(grouped).reduce((total: number, group: Order[]) => total + this.sumRevenue(group), 0)
+                    const grouped = store.groupBy(orders, 'month', 'year')
+                    return Object.values(grouped).reduce(
+                        (total: number, group: Order[]) => total + store.sumRevenue(group),
+                        0
+                    )
                 }
 
                 case 'yearly': {
-                    const grouped = this.groupBy(orders, 'year')
-                    return Object.values(grouped).reduce((total: number, group: Order[]) => total + this.sumRevenue(group), 0)
+                    const grouped = store.groupBy(orders, 'year')
+                    return Object.values(grouped).reduce(
+                        (total: number, group: Order[]) => total + store.sumRevenue(group),
+                        0
+                    )
                 }
 
                 default:
@@ -47,7 +59,12 @@ export const useRevenueStore = defineStore('revenue', {
         },
 
         totalOrders(state): number {
-            const orders = this.filteredOrders
+            const store = this as unknown as {
+                filteredOrders: Order[]
+                groupBy: (...args: any[]) => Record<string, Order[]>
+            }
+
+            const orders = store.filteredOrders
             const period = state.selectedPeriod
 
             switch (period) {
@@ -55,17 +72,17 @@ export const useRevenueStore = defineStore('revenue', {
                     return orders.reduce((sum: number, item: Order) => sum + item.orders, 0)
 
                 case 'monthly': {
-                    const grouped = this.groupBy(orders, 'month', 'year')
+                    const grouped = store.groupBy(orders, 'month', 'year')
                     return Object.values(grouped).reduce(
-                        (sum: number, group: Order[]) => sum + group.reduce((s: number, o: Order) => s + o.orders, 0),
+                        (sum: number, group: Order[]) => sum + group.reduce((s, o) => s + o.orders, 0),
                         0
                     )
                 }
 
                 case 'yearly': {
-                    const grouped = this.groupBy(orders, 'year')
+                    const grouped = store.groupBy(orders, 'year')
                     return Object.values(grouped).reduce(
-                        (sum: number, group: Order[]) => sum + group.reduce((s: number, o: Order) => s + o.orders, 0),
+                        (sum: number, group: Order[]) => sum + group.reduce((s, o) => s + o.orders, 0),
                         0
                     )
                 }
@@ -76,20 +93,23 @@ export const useRevenueStore = defineStore('revenue', {
         },
 
         chartData(state): { labels: string[]; datasets: any[] } {
+            const store = this as unknown as {
+                filteredOrders: Order[]
+            }
+
             const dataMap: Record<string, number> = {}
             let labels: string[] = []
-
-            const orders = this.filteredOrders
+            const orders = store.filteredOrders
 
             if (state.selectedPeriod === 'daily') {
-                orders.forEach((order: Order) => {
+                orders.forEach(order => {
                     const label = order.date
                     dataMap[label] = (dataMap[label] || 0) + order.revenue
                 })
                 labels = Object.keys(dataMap).sort((a, b) => new Date(a).getTime() - new Date(b).getTime())
             }
             else if (state.selectedPeriod === 'monthly') {
-                orders.forEach((order: Order) => {
+                orders.forEach(order => {
                     const label = `${order.month}-${order.year}`
                     dataMap[label] = (dataMap[label] || 0) + order.revenue
                 })
@@ -101,7 +121,7 @@ export const useRevenueStore = defineStore('revenue', {
                 })
             }
             else if (state.selectedPeriod === 'yearly') {
-                orders.forEach((order: Order) => {
+                orders.forEach(order => {
                     const label = order.year
                     dataMap[label] = (dataMap[label] || 0) + order.revenue
                 })
