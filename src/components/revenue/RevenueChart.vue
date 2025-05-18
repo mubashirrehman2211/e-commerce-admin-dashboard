@@ -80,7 +80,6 @@ const chartOptions: ChartOptions<'line'> = {
     x: {
       grid: {
         display: false,
-        drawBorder: false
       },
       ticks: {
         color: '#999',
@@ -92,7 +91,6 @@ const chartOptions: ChartOptions<'line'> = {
     y: {
       grid: {
         color: '#555',
-        drawBorder: false,
         tickLength: 0
       },
       ticks: {
@@ -108,13 +106,13 @@ const chartOptions: ChartOptions<'line'> = {
     line: {
       tension: 0.4,
       borderWidth: 2,
-      color: '#333',
+      color: 'green',
     },
     point: {
       radius: 0,
       hoverRadius: 6,
       hitRadius: 10,
-      backgroundColor: '#fefefe',
+      backgroundColor: 'rgba(34, 197, 94, 0.5)',
       borderWidth: 2
     }
   }

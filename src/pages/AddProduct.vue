@@ -1,44 +1,69 @@
 <script setup lang="ts">
-import {reactive} from 'vue'
-import TagOutline from 'u-vue/icons/TagOutline.vue';
-import CurrencyUsd from 'u-vue/icons/CurrencyUsd.vue';
-import LayersOutline from 'u-vue/icons/LayersOutline.vue';
-import ImageOutline from 'u-vue/icons/ImageOutline.vue';
-import ListBox from 'u-vue/icons/FormatListBulleted.vue';
-import {productTypes} from '../constants/SelectOptions.ts'
-import {useProductStore} from "../stores/product.store.ts";
-import {useRouter} from "vue-router";
+import { reactive } from 'vue'
+import { useRouter } from 'vue-router'
+import TagOutline from 'u-vue/icons/TagOutline.vue'
+import CurrencyUsd from 'u-vue/icons/CurrencyUsd.vue'
+import LayersOutline from 'u-vue/icons/LayersOutline.vue'
+import ImageOutline from 'u-vue/icons/ImageOutline.vue'
+import ListBox from 'u-vue/icons/FormatListBulleted.vue'
 
-const product = reactive({
+import { productTypes } from '../constants/SelectOptions.ts'
+import { useProductStore } from "../stores/product.store.ts"
+
+interface ProductForm {
+  name: string
+  price: string
+  stock: string
+  category: string
+  image: string
+}
+
+const product = reactive<ProductForm>({
   name: '',
   price: '',
   stock: '',
   category: '',
-  image: '',
+  image: ''
 })
 
 const productStore = useProductStore()
 const router = useRouter()
 
-function handleProductImage(e) {
-  console.log({e})
-  const file = e.target.files[0]
+function handleProductImage(e: Event) {
+  const target = e.target as HTMLInputElement
+  const file = target?.files?.[0]
   if (!file) return
 
-  const reader = new FileReader();
+  const reader = new FileReader()
   reader.onload = function (e) {
-    product.image = e.target.result
+    const result = e.target?.result
+    if (typeof result === 'string') {
+      product.image = result
+    }
   }
 
   reader.readAsDataURL(file)
+}
+
+function handleSubmit() {
+  productStore.addProduct(
+      {
+        name: product.name,
+        price: Number(product.price),
+        stock: Number(product.stock),
+        category: product.category,
+        image: product.image,
+      },
+      router
+  );
 }
 
 </script>
 
 <template>
   <form
-    class="md:w-[500px] border border-gray-700 my-10 w-full m-auto p-4 shadow-lg rounded-lg space-y-10"
-    @submit.prevent="productStore.addProduct(product, router)"
+      class="md:w-[500px] border border-gray-700 my-10 w-full m-auto p-4 shadow-lg rounded-lg space-y-10"
+      @submit.prevent="handleSubmit"
   >
     <h2 class="text-2xl text-color font-semibold text-center">
       Add New Product
@@ -49,11 +74,11 @@ function handleProductImage(e) {
         <div class="relative">
           <TagOutline class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
           <input
-            v-model="product.name"
-            type="text"
-            placeholder="Product Name"
-            class="w-full pl-10 pr-3 py-2 border-b-2 border-gray-700 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
-            required
+              v-model="product.name"
+              type="text"
+              placeholder="Product Name"
+              class="w-full pl-10 pr-3 py-2 border-b-2 border-gray-700 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+              required
           >
         </div>
       </div>
@@ -62,12 +87,12 @@ function handleProductImage(e) {
         <div class="relative">
           <CurrencyUsd class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
           <input
-            v-model="product.price"
-            placeholder="Price ($)"
-            type="number"
-            step="0.01"
-            class="w-full pl-10 pr-3 py-2 border-b-2 border-gray-700 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
-            required
+              v-model="product.price"
+              placeholder="Price ($)"
+              type="number"
+              step="0.01"
+              class="w-full pl-10 pr-3 py-2 border-b-2 border-gray-700 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+              required
           >
         </div>
       </div>
@@ -76,11 +101,11 @@ function handleProductImage(e) {
         <div class="relative">
           <LayersOutline class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
           <input
-            v-model="product.stock"
-            placeholder="Stock"
-            type="number"
-            class="w-full pl-10 pr-3 py-2 border-b-2 border-gray-700 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
-            required
+              v-model="product.stock"
+              placeholder="Stock"
+              type="number"
+              class="w-full pl-10 pr-3 py-2 border-b-2 border-gray-700 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+              required
           >
         </div>
       </div>
@@ -89,20 +114,15 @@ function handleProductImage(e) {
         <div class="relative">
           <ListBox class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
           <select
-            v-model="product.category"
-            class="w-full pl-10 text-color pr-3 py-2 bg-gray-800 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
-            required
+              v-model="product.category"
+              class="w-full pl-10 text-color pr-3 py-2 bg-gray-800 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+              required
           >
+            <option disabled value="">Select category</option>
             <option
-              disabled
-              value=""
-            >
-              Select category
-            </option>
-            <option
-              v-for="category in productTypes"
-              :key="category"
-              :value="category"
+                v-for="category in productTypes"
+                :key="category"
+                :value="category"
             >
               {{ category }}
             </option>
@@ -114,15 +134,15 @@ function handleProductImage(e) {
         <div class="relative">
           <ImageOutline class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
           <input
-            type="file"
-            class="w-full pl-10 pr-3 py-2 border-b-2 border-gray-700 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
-            @change="handleProductImage"
+              type="file"
+              class="w-full pl-10 pr-3 py-2 border-b-2 border-gray-700 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+              @change="handleProductImage"
           >
           <img
-            v-if="product.image"
-            :src="product.image"
-            alt="image-preview"
-            class="w-full h-full object-contain border-2 rounded border-[var(--color-primary)]"
+              v-if="product.image"
+              :src="product.image"
+              alt="image-preview"
+              class="w-full h-full object-contain border-2 rounded border-[var(--color-primary)] mt-2"
           >
         </div>
       </div>
@@ -130,8 +150,8 @@ function handleProductImage(e) {
 
     <div class="pt-4">
       <button
-        type="submit"
-        class="w-full font-semibold cursor-pointer bg-[var(--color-primary)] text-white py-2 rounded-md hover:bg-[var(--color-primary-light)] transition"
+          type="submit"
+          class="w-full font-semibold cursor-pointer bg-[var(--color-primary)] text-white py-2 rounded-md hover:bg-[var(--color-primary-light)] transition"
       >
         Add Product
       </button>
@@ -140,5 +160,4 @@ function handleProductImage(e) {
 </template>
 
 <style scoped>
-
 </style>

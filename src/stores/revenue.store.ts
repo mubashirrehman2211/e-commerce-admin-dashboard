@@ -1,15 +1,6 @@
 import { defineStore } from 'pinia'
 import { sales } from '../constants/Sales.ts'
-
-interface Order {
-    id: string
-    date: string
-    month: string
-    year: string
-    category: string
-    revenue: number
-    orders: number
-}
+import type {Order} from "@/types";
 
 export const useRevenueStore = defineStore('revenue', {
     state: () => ({

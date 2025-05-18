@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import AddStock from "./AddStock.vue";
+import type {Product} from "@/types";
 
 defineProps({
   products: {
