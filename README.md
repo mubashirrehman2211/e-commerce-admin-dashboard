@@ -1,5 +1,5 @@
 # Clone the repository
-git clone https://github.com/your-username/ecommerce-dashboard.git
+git clone https://github.com/mubashirrehman2211/e-commerce-admin-dashboard.git
 cd e-commerce-admin-dashboard
 
 # Install dependencies
