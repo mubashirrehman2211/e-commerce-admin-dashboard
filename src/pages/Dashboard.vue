@@ -23,27 +23,36 @@ const productStore = useProductStore()
 <template>
   <div class="w-full">
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
-      <StatisticsCard title="Total Orders" :value="orders">
+      <StatisticsCard
+        title="Total Orders"
+        :value="orders"
+      >
         <template #icon>
-          <CartOutline/>
+          <CartOutline />
         </template>
       </StatisticsCard>
 
-      <StatisticsCard title="Revenue" :value="`$ ${revenue}`">
+      <StatisticsCard
+        title="Revenue"
+        :value="`$ ${revenue}`"
+      >
         <template #icon>
-          <CurrencyUsd/>
+          <CurrencyUsd />
         </template>
       </StatisticsCard>
 
-      <StatisticsCard title="Inventory Count" :value="productStore.products?.length">
+      <StatisticsCard
+        title="Inventory Count"
+        :value="productStore.products?.length"
+      >
         <template #icon>
-          <TextBoxMultipleOutline/>
+          <TextBoxMultipleOutline />
         </template>
       </StatisticsCard>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 m-auto mt-10">
-      <RecentProducts/>
-      <LowInventoryList/>
+      <RecentProducts />
+      <LowInventoryList />
     </div>
   </div>
 </template>

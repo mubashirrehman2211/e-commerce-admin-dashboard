@@ -1,19 +1,35 @@
 <script setup lang="ts">
-import { Line } from 'vue-chartjs';
+import {Line} from 'vue-chartjs';
 import {
   Chart as ChartJS,
   Title, Tooltip, Legend,
   LineElement, PointElement, CategoryScale, LinearScale
 } from 'chart.js';
+import type {ChartOptions} from 'chart.js';
 
 ChartJS.register(
     Title, Tooltip, Legend,
     LineElement, PointElement, CategoryScale, LinearScale
 );
 
-defineProps(['chartData']);
+interface ChartDataset {
+  label: string;
+  data: number[];
+  borderColor?: string;
+  backgroundColor?: string;
+  tension?: number;
+}
 
-const chartOptions = {
+interface RevenueChartData {
+  labels: string[];
+  datasets: ChartDataset[];
+}
+
+defineProps<{
+  chartData: RevenueChartData;
+}>();
+
+const chartOptions: ChartOptions<'line'> = {
   responsive: true,
   maintainAspectRatio: false,
   interaction: {
@@ -29,7 +45,7 @@ const chartOptions = {
         font: {
           family: "'Inter', sans-serif",
           size: 14,
-          weight: '600'
+          weight: 600
         },
         padding: 20,
         boxWidth: 12,
@@ -41,7 +57,7 @@ const chartOptions = {
       titleColor: '#F9FAFB',
       bodyColor: '#F9FAFB',
       titleFont: {
-        weight: '600',
+        weight: 600,
         size: 14
       },
       bodyFont: {
@@ -55,7 +71,7 @@ const chartOptions = {
       boxPadding: 4,
       callbacks: {
         label: (context) => {
-          return ` ${context.dataset.label}: $${context.raw.toLocaleString()}`;
+          return ` ${context.dataset.label}: $${context.raw?.toLocaleString()}`;
         }
       }
     }
@@ -107,7 +123,10 @@ const chartOptions = {
 
 <template>
   <div class="chart-container">
-    <Line :data="chartData" :options="chartOptions" />
+    <Line
+      :data="chartData"
+      :options="chartOptions"
+    />
   </div>
 </template>
 

@@ -162,7 +162,7 @@ export const useProductStore = defineStore('product', {
     },
 
     actions: {
-        updateStock(id, type) {
+        updateStock(id: string, type: 'increase' | 'decrease') {
             const product = this.products.find(p => p.id === id);
             if (product) {
                 switch (type) {
@@ -176,8 +176,8 @@ export const useProductStore = defineStore('product', {
             }
         },
 
-        addProduct(product, router) {
-            const newProduct = {
+        addProduct(product: Omit<Product, 'id' | 'created_at'>, router: Router): void {
+            const newProduct: Product = {
                 ...product,
                 id: this.products.length + 1,
                 created_at: new Date()
@@ -191,8 +191,8 @@ export const useProductStore = defineStore('product', {
                 type: 'success',
                 transition: 'slide',
                 position: 'top-center',
-                showIcon: 'true',
-                hideProgressBar: 'true',
+                showIcon: true,
+                hideProgressBar: true,
             })
         },
     }

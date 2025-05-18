@@ -118,7 +118,7 @@ export const useRevenueStore = defineStore('revenue', {
     },
 
     actions: {
-        sumRevenue(orders) {
+        sumRevenue(orders: Orders[]) {
             return orders.reduce((sum, order) => sum + order.revenue, 0)
         },
 
