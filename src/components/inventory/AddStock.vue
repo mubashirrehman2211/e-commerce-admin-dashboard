@@ -2,6 +2,8 @@
 import Plus from 'u-vue/icons/Plus.vue';
 import Minus from 'u-vue/icons/Minus.vue';
 import {useProductStore} from "../../stores/product.store.ts";
+import { PropType } from 'vue'
+import type { StockType } from '../../types/index.ts'
 
 defineProps({
   stock: {

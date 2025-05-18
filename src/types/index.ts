@@ -15,3 +15,9 @@ export interface Product {
     stock?: number
     created_at: Date
 }
+
+type StockType = {
+    productId: number
+    quantity: number
+    type: 'add' | 'remove'
+}
