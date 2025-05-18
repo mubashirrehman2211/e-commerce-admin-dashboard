@@ -1,9 +1,8 @@
 import ViewDashboardOutline from 'u-vue/icons/ViewDashboardOutline.vue';
 import AccountGroup from 'u-vue/icons/AccountGroup.vue';
 import FormatListBulleted from 'u-vue/icons/FormatListBulleted.vue';
+import PlusBoxMultiple from 'u-vue/icons/PlusBoxMultiple.vue';
 import CartOutline from 'u-vue/icons/CartOutline.vue';
-import CreditCardOutline from 'u-vue/icons/CreditCardOutline.vue';
-import TextBoxOutline from 'u-vue/icons/TextBoxOutline.vue';
 
 export const profileLinks = [
     {
@@ -20,26 +19,20 @@ export const profileLinks = [
     },
     {
         id: 3,
-        name: 'Product',
-        link: '/',
+        name: 'Products',
+        link: '/products',
         icon: FormatListBulleted,
     },
     {
         id: 4,
-        name: 'Orders',
-        link: '/',
+        name: 'Add',
+        link: '/add-product',
+        icon: PlusBoxMultiple,
+    },
+    {
+        id:5,
+        name: 'Revenue',
+        link: '/revenue',
         icon: CartOutline,
-    },
-    {
-        id: 5,
-        name: 'Payment',
-        link: '/',
-        icon: CreditCardOutline,
-    },
-    {
-        id: 6,
-        name: 'Pages',
-        link: '/',
-        icon: TextBoxOutline,
     },
 ]

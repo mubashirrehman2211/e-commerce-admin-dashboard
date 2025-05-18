@@ -1,27 +1,29 @@
 <script setup lang="ts">
 import ChevronDown from 'u-vue/icons/ChevronDown.vue';
+import AccountCircleOutline from 'u-vue/icons/AccountCircleOutline.vue';
 import UDropdown from 'u-vue/components/UDropdown.vue'
-import {profileLinks} from './../constants/Profile';
+import {profileLinks} from '../constants/Profile.ts';
 </script>
 
 <template>
-  <div class="flex gap-10 items-center text-color mx-10">
-    <!-- profile page -->
-    <input type="text" class="search-box p-2 border-2 border-gray-700 rounded-lg" placeholder="Search">
-    <UDropdown>
-      <div class="profile-content flex justify-between items-center gap-4 cursor-pointer">
-        <img src="/profile-avatar.jpg" alt="profile-image" class="w-8 h-8 rounded-full shadow-sm"/>
-        <h2 class="admin-name text-lg">M Ali</h2>
+  <div class="flex gap-10 items-center text-[var(--color-primary-light)]">
+    <UDropdown left>
+      <div class="profile-content all-center gap-2 cursor-pointer">
+        <AccountCircleOutline class="sm:text-3xl text-xl"/>
+        <h2 class="admin-name font-semibold">Jhon</h2>
         <ChevronDown class="text-xl"/>
       </div>
+
       <template #content>
         <div class="text-color w-full p-5 rounded" v-for="profile in profileLinks"
              :style="{ background: 'linear-gradient(to bottom right, var(--color-background), var(--color-surface))' }"
         >
-          <div class="flex gap-2 items-center cursor-pointer" :key="profile.id" @click="()=> console.log('click')">
-            <component :is="profile.icon"/>
-            <h2>{{ profile.name }}</h2>
-          </div>
+          <RouterLink :to="profile.link">
+            <div class="flex gap-2 items-center cursor-pointer" :key="profile.id">
+              <component :is="profile.icon" class="text-[var(--color-primary-light)]"/>
+              <h2>{{ profile.name }}</h2>
+            </div>
+          </RouterLink>
         </div>
       </template>
     </UDropdown>
